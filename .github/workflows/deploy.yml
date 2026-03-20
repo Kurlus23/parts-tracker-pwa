@@ -25,18 +25,18 @@ jobs:
       - name: Enable corepack
         run: corepack enable
 
+      # NOTE: repo root already contains your web app
       - name: Install dependencies
-        working-directory: apps/web
         run: pnpm install || npm install
 
       - name: Build
-        working-directory: apps/web
         run: pnpm run build || npm run build
 
+      # Publish the built site from ./dist (repo root)
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/web/dist
+          path: dist
 
   deploy:
     needs: build
