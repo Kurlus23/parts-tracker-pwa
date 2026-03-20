@@ -2,8 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// IMPORTANT: base must match your GitHub Pages repo name
 export default defineConfig({
-  base:   // IMPORTANT for GitHub Pages
+  base: '/parts-tracker-pwa/',
   plugins: [
     react(),
     VitePWA({
