@@ -1,24 +1,19 @@
-name: Azure Static Web Apps CI/CD
+name: Deploy PWApp with Static Web Apps (Preview - No Token Needed)
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  build_and_deploy:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # (Optional) Use Node 18+ for deterministic local builds before SWA action
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
@@ -31,17 +26,10 @@ jobs:
 
       - name: Build
         working-directory: apps/web
-        run: |
-          pnpm run build || npm run build
+        run: pnpm run build || npm run build
 
-      - name: Deploy to Azure Static Web Apps
-        id: deploy
-        uses: Azure/static-web-apps-deploy@v1
+      - name: Deploy to Static Web Apps (Preview)
+        uses: Azure/static-web-apps-deploy@preview
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}   # Used for PR comments
-          action: "upload"
-          #### Paths are relative to repo root:
-          app_location: "/apps/web"
-          api_location: ""            # leave empty if you don't have an API
-          output_location: "dist"     # the build output inside /apps/web/dist
+          app_location: "apps/web"
+          output_location: "dist"
