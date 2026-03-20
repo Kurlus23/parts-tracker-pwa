@@ -27,11 +27,11 @@ jobs:
 
       - name: Install dependencies
         working-directory: apps/web
-        run: pnpm install
+        run: pnpm install || npm install
 
       - name: Build
         working-directory: apps/web
-        run: pnpm run build
+        run: pnpm run build || npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
