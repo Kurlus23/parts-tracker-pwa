@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { BrowserMultiFormatReader } from '@zxing/library'
 
 type Props = { onResult: (text: string) => void }
+
 export default function BarcodeScanner({ onResult }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -13,24 +14,37 @@ export default function BarcodeScanner({ onResult }: Props) {
 
     async function start() {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' },
+        })
         if (!videoRef.current) return
         videoRef.current.srcObject = stream
         await videoRef.current.play()
 
         codeReader.decodeFromVideoDevice(undefined, videoRef.current, (result, err) => {
           if (canceled) return
-          if (result) onResult(result.getText())
-          if (err && (err as any).name !== 'NotFoundException') setError((err as any).message)
+          if (result) {
+            onResult(result.getText())
+            setError(null) // clear with null, never undefined
+          }
+          if (err && (err as any).name !== 'NotFoundException') {
+            const msg =
+              (err as any)?.message ??
+              (typeof err === 'string' ? err : 'Unknown camera error')
+            setError(msg) // always a string
+          }
         })
-      } catch (e: any) { setError(e.message ?? String(e)) }
+      } catch (e: any) {
+        const msg = e?.message ?? 'Unable to access camera'
+        setError(msg)
+      }
     }
 
     start()
     return () => {
       canceled = true
       codeReader.reset()
-      stream?.getTracks().forEach(t => t.stop())
+      stream?.getTracks().forEach((t) => t.stop())
     }
   }, [onResult])
 

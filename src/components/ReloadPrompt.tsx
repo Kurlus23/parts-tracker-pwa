@@ -8,11 +8,18 @@ export default function ReloadPrompt() {
     offlineReady: [offlineReady, setOfflineReady],
     updateServiceWorker,
   } = useRegisterSW({
-    onRegisteredSW(swUrl, reg) { /* console.log('SW registered', swUrl, reg) */ },
-    onRegisterError(err) { console.error('SW registration error', err) }
+    onRegisteredSW(swUrl: string, reg?: ServiceWorkerRegistration) {
+      // console.log('SW registered:', swUrl, reg)
+    },
+    onRegisterError(err: unknown) {
+      console.error('SW registration error', err)
+    },
   })
 
-  const close = () => { setOfflineReady(false); setNeedRefresh(false) }
+  const close = () => {
+    setOfflineReady(false)
+    setNeedRefresh(false)
+  }
 
   if (!offlineReady && !needRefresh) return null
 
@@ -24,8 +31,17 @@ export default function ReloadPrompt() {
           {needRefresh && <span>New version available.</span>}
         </div>
         <div className="mt-2 flex gap-2 justify-end">
-          {needRefresh && <button className="px-3 py-1 bg-blue-600 text-white rounded" onClick={() => updateServiceWorker(true)}>Reload</button>}
-          <button className="px-3 py-1 bg-gray-200 rounded" onClick={close}>Dismiss</button>
+          {needRefresh && (
+            <button
+              className="px-3 py-1 bg-blue-600 text-white rounded"
+              onClick={() => updateServiceWorker(true)}
+            >
+              Reload
+            </button>
+          )}
+          <button className="px-3 py-1 bg-gray-200 rounded" onClick={close}>
+            Dismiss
+          </button>
         </div>
       </div>
     </div>

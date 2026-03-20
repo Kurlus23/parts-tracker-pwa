@@ -10,6 +10,9 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,14 +28,12 @@ jobs:
       - name: Enable corepack
         run: corepack enable
 
-      # NOTE: repo root already contains your web app
       - name: Install dependencies
         run: pnpm install || npm install
 
       - name: Build
         run: pnpm run build || npm run build
 
-      # Publish the built site from ./dist (repo root)
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
