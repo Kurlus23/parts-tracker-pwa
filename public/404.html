@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=/parts-tracker-pwa/" />
+    <script>
+      // If you want to preserve the path, do a JS redirect:
+      const p = location.pathname.replace(/^\/+/, '');
+      location.replace('/parts-tracker-pwa/' + (p ? '' : '') + location.search + location.hash);
+    </script>
+  </head>
+  <body></body>
+</html>
